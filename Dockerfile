@@ -6,8 +6,8 @@ COPY entrypoint.sh /entrypoint.sh
 
 RUN \
   apt-get update && \
-  apt-get install -y python3 python3-pip git && \
-  pip3 install jupyterlab && \
+  apt-get install -y python3 python3-pip redir && \
+  pip3 install calibreweb && \
   apt-get --purge autoremove -y python3-pip && \
   apt-get clean && \
   chmod +x /reset-pass.sh /entrypoint.sh && \

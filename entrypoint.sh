@@ -1,17 +1,11 @@
 #!/bin/bash
-export JUPYTER_CONFIG_DIR="/app/jupyter/config"
-export JUPYTER_DATA_DIR="/app/jupyter/data"
-export JUPYTER_RUNTIME_DIR="/app/jupyter/runtime"
+redir -b 0.0.0.0 :8080 :8083
+mkdir -p "/app/data" && cd "/app/data"
 
-mkdir -p "/app/jupyter/config" "/app/jupyter/data" "/app/jupyter/runtime"
-
-if [ ! -f "/app/jupyter/config/jupyter.token" ]; then
-    echo "$(cat /proc/sys/kernel/random/uuid)" | \
-        python3 -c "from notebook.auth import passwd;print(passwd(input()))" > \
-        "/app/jupyter/config/jupyter.token"
+if [ ! -f "/app/application.db" ]; then
+    python3 -m calibreweb \
+        -s "admin:$(cat /proc/sys/kernel/random/uuid)" \
+        -p "/app/application.db"
 fi
 
-mkdir -p "/app/workspace" && cd "/app/workspace"
-
-exec jupyter lab --allow-root --ip 0.0.0.0 --port 8080 \
-    --NotebookApp.password=$(cat /app/jupyter/config/jupyter.token)
+exec python3 -m calibreweb -i 0.0.0.0 -p "/app/application.db"
