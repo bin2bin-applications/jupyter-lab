@@ -1,2 +1,4 @@
 #!/bin/bash
-python3 -m calibreweb -s "admin:$2" -p "/app/application.db"
+echo "$2" | \
+    python3 -c "from notebook.auth import passwd;print(passwd(input()))" > \
+    "/app/jupyter/config/jupyter.token"
